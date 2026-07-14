@@ -2,7 +2,7 @@
 
 A collection of [Cookiecutter](https://cookiecutter.readthedocs.io/) templates for scaffolding
 Azure-hosted project repos with a consistent structure and a ready-to-run Azure Pipelines YAML
-(compile/build, SCA, SAST, test).
+(security scan, SCA, SAST, test, build-once-deploy-many).
 
 Each template lives in its own git repo, included here as a submodule and grouped by
 **language + function** (e.g. Python Function App, Python Container App), so each generated
@@ -13,8 +13,8 @@ template trying to cover every case.
 
 | Template | Path | Description |
 |---|---|---|
-| Python Function App | [`cookiecutter-python-functionapp`](cookiecutter-python-functionapp) | Azure Functions (Python) project. Pipeline: Build, SCA (pip-audit), SAST (bandit), Test (pytest). |
-| Python Container App | [`cookiecutter-python-containerapp`](cookiecutter-python-containerapp) | FastAPI service with Dockerfile for Azure Container Apps. Pipeline: SCA (pip-audit), SAST (bandit), Test (pytest), Build & Push to ACR. |
+| Python Function App | [`cookiecutter-python-functionapp`](https://github.com/hazwan12/cookiecutter-python-functionapp) | Azure Functions (Python) project. Pipeline: Defender for DevOps, SCA (CodeQL Dependency Scanning or pip-audit), SAST (CodeQL or Bandit), Test (pytest), Build, illustrative Deploy to UAT/Production. |
+| Python Container App | [`cookiecutter-python-containerapp`](https://github.com/hazwan12/cookiecutter-python-containerapp) | FastAPI service with Dockerfile for Azure Container Apps. Pipeline: Defender for DevOps, SCA (CodeQL Dependency Scanning or pip-audit), SAST (CodeQL or Bandit), Test (pytest), Build & Push to ACR, illustrative Deploy to UAT/Production. |
 
 More templates (e.g. Python Data Pipeline, Python Workbook) will be added the same way.
 
@@ -23,7 +23,7 @@ More templates (e.g. Python Data Pipeline, Python Workbook) will be added the sa
 Clone with submodules:
 
 ```bash
-git clone --recurse-submodules <this-repo-url>
+git clone --recurse-submodules https://github.com/hazwan12/cookiecutter-azure-repos.git
 ```
 
 If you already cloned without `--recurse-submodules`:
@@ -41,7 +41,7 @@ cookiecutter cookiecutter-python-functionapp
 cookiecutter cookiecutter-python-containerapp
 ```
 
-Answer the prompts, then push the generated project to its own Azure DevOps repo.
+Answer the prompts, then push the generated project to its own repo (Azure DevOps or GitHub).
 
 ## Adding a new template
 
@@ -55,7 +55,11 @@ Answer the prompts, then push the generated project to its own Azure DevOps repo
 
 ## Notes
 
-- Submodule URLs currently point to local paths until these repos are pushed to Azure DevOps —
-  update `.gitmodules` with the real remote URLs at that point.
+- The `DeployUAT` / `DeployProduction` stages in each pipeline are illustrative examples of a
+  build-once-deploy-many flow, not production-ready as-is — real release pipelines should be
+  configured in Azure DevOps under Pipelines > Releases (or an equivalent environment-gated
+  YAML pipeline maintained separately).
+- CodeQL-based SAST/SCA options require GitHub Advanced Security for Azure DevOps to be enabled
+  on the target repo; if it isn't licensed, regenerate with `sast_tool=bandit` / `sca_tool=pip-audit`.
 - Shared Azure Pipelines step templates (for reuse across project types) may be extracted into
   a separate templates repo once there's enough duplication to justify it.

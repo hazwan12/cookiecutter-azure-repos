@@ -1,3 +1,6 @@
 [submodule "cookiecutter-python-functionapp"]
 	path = cookiecutter-python-functionapp
 	url = ./cookiecutter-python-functionapp
+[submodule "cookiecutter-python-containerapp"]
+	path = cookiecutter-python-containerapp
+	url = ./cookiecutter-python-containerapp
